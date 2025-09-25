@@ -5,7 +5,8 @@ import Cart from "./routes/Cart"
 import Profile from "./routes/Profile.js";
 import Navbar from "./components/Navbar.js"
 import Login from "./routes/Login.js"
-import Register from "./routes/Register.js";
+import SignUp from "./routes/Signup.js";
+import Orders from "./routes/Order.js";
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/order" element={<Orders />} />
       </Routes>
     </Router>
   );

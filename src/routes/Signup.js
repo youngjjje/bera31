@@ -4,7 +4,7 @@ import {doc, setDoc} from "firebase/firestore"
 import {auth, db} from "../fbase"
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const SignUp = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
@@ -77,4 +77,4 @@ const Register = () => {
     )
 }
 
-export default Register
+export default SignUp
