@@ -65,7 +65,7 @@ const Cart = () => {
             alert("장바구니가 비어 있습니다")
             return
         }
-        navigate("/order")
+        navigate("/checkout")
     }
     
     return (

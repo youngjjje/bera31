@@ -36,7 +36,7 @@ const Profile = () => {
                     <p><strong>전화번호:</strong>{userData.phone}</p>
 
                     <div>
-                        <button onClick={() => navigate("/orders")}>주문목록</button>
+                        <button onClick={() => navigate("/orderhistory")}>주문목록</button>
                         <button onClick={() => navigate("/cart")}>장바구니</button>
                     </div>
                 </>

@@ -6,7 +6,9 @@ import Profile from "./routes/Profile.js";
 import Navbar from "./components/Navbar.js"
 import Login from "./routes/Login.js"
 import SignUp from "./routes/Signup.js";
-import Orders from "./routes/Order.js";
+import CheckOut from "./routes/CheckOut.js";
+import Order from "./routes/Order.js"
+import OrderHistory from "./routes/OrderHidtory.js";
 
 function App() {
   return (
@@ -18,7 +20,10 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/order" element={<Orders />} />
+        <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/order" element={<Order />} />
+        <Route path="/orderhistory" element={<OrderHistory />} />
+        
       </Routes>
     </Router>
   );

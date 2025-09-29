@@ -1,39 +1,40 @@
-import React, {useEffect, useState} from "react"
-import {auth, db} from "../fbase"
-import {collection, deleteDoc, getDoc, getDocs} from "firebase/firestore"
-import { useNavigate } from "react-router-dom"
+// Order.js
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const Orders = () => {
-    const [orders, setOders] = useState([])
+const Order = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const order = location.state;
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            const user = auth.currentUser
-            if(!user) return
+  if (!order) return <p>결제 정보가 없습니다</p>;
 
-            const querySnapshot = await getDocs(collection(db,"users", user.uid, "cart"))
-            const orderList = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}))
-            setOders(orderList)
-        }
-            fetchOrders()
-    }, [])
-    return (
-        <div>
-            <h2>주문목록</h2>
-            {orders.length === 0 ? (
-                <p>주문 내역이 없습니다</p>
-            ) : (
-                <ul>
-                    {orders.map((order) => (
-                        <li key={order.id}>
-                            {order.name} - 수량: {order.quantity}
-                        </li>
-                    ))}
-                </ul>
-            )}    
-        </div>
-        
-    )
-}
+  return (
+    <div>
+      <h2>결제 완료</h2>
+      <p>이름: {order.name}</p>
+      <p>전화번호: {order.phone}</p>
+      <p>주소: {order.address}</p>
+      <p>결제 수단: {order.paymentMethod}</p>
+      <p>총 금액: {order.totalPrice.toLocaleString()}원</p>
 
-export default Orders
+      <h3>주문 상품</h3>
+      <ul>
+        {order.products.map((item, idx) => (
+          <li key={idx}>
+            {item.name} - 수량: {item.quantity} - 가격:{" "}
+            {(item.price * item.quantity).toLocaleString()}원
+          </li>
+        ))}
+      </ul>
+
+      <div>
+        <button onClick={() => navigate("/")}>홈으로 돌아가기</button>
+        <button onClick={() => navigate("/cart")}>장바구니로 돌아가기</button>
+        <button onClick={() => navigate("/order")}>주문내역 확인하기</button>
+      </div>
+    </div>
+  );
+};
+
+export default Order;
