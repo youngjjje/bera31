@@ -1,7 +1,22 @@
 import React, {useEffect, useState} from "react";
-import {collection, getDocs, doc, deleteDoc, updateDoc} from "firebase/firestore"
+import {collection, getDocs, doc, deleteDoc, updateDoc, query, orderBy} from "firebase/firestore"
 import {auth, db} from "../fbase"
 import { useNavigate } from "react-router-dom";
+import "../css/Cart.css"
+
+import tropical from "../image/트로피컬.png"
+import polarbear from "../image/폴라베어.png"
+import watermelon from "../image/수박.png"
+import mango from "../image/망고.png"
+import rainbow from "../image/레인보우.png"
+
+const productImages = {
+    1: tropical,
+    2: polarbear,
+    3: watermelon,
+    4: mango,
+    5: rainbow,
+}
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([])
@@ -12,11 +27,20 @@ const Cart = () => {
             const user = auth.currentUser
             if(!user) return
 
-            const querySnapshot = await getDocs(collection(db, "users", user.uid, "cart"))
-            const items = querySnapshot.docs.map(docSnap => ({
-                id: docSnap.id,
-                ...docSnap.data(),
-            }))
+            const q = query(
+                collection(db, "users", user.uid, "cart"),
+                orderBy("createAt", "asc")
+            )
+            const querySnapshot = await getDocs(q)
+            const items = querySnapshot.docs.map((docSnap) => {
+                const data = docSnap.data()
+                return {
+                    id: docSnap.id,
+                    productId: data.productId,
+                    ...data,
+                    image: productImages[Number(data.productId)] || "https://via.placeholder.com/150"
+                }
+            })
             setCartItems(items)
         }
         fetchCart()
@@ -69,27 +93,34 @@ const Cart = () => {
     }
     
     return (
-        <div>
-            <h1>장바구니 페이지</h1>
+        <div className="cart-container">
+            <h1 className="cart-title">장바구니 페이지</h1>
             {cartItems.length === 0 ? (
-                <p>장바구니가 비어있습니다.</p>
+                <p className="empty-cart">장바구니가 비어있습니다.</p>
             ) : (
-                <ul>
+                <ul className="cart-list">
                     {cartItems.map(item => (
-                        <li key={item.id}>
-                            <p>{item.name}</p>
-                            <p>수량: {item.quantity}</p>
-                            <button onClick={() => handleDecrease(item.id, item.quantity)}>-</button>
-                            <button onClick={() => handleIncrease(item.id, item.quantity)}>+</button>
-                            <button onClick={() => handleDelete(item.id)}>삭제</button>
+                        <li className="cart-item" key={item.id}>
+                            <div className="cart-image-box">
+                                <img src={item.image} alt={item.name} />
+                            </div>
+                            <div className="divider"></div>
+                            <div className="cart-info">
+                                <p className="cart-name">{item.name}</p>
+                                <p className="cart-quantity">수량: {item.quantity}</p>
+                                <div className="cart-buttons">
+                                    <button onClick={() => handleDecrease(item.id, item.quantity)}>-</button>
+                                    <button onClick={() => handleIncrease(item.id, item.quantity)}>+</button>
+                                    <button onClick={() => handleDelete(item.id)}>삭제</button>
+                                </div>
+                            </div>                            
                         </li>
                     ))}
                 </ul>
             )}
             
-            <button onClick={handleOrder}>주문하기</button>
-        </div>
-        
+            <button className="order-button" onClick={handleOrder}>주문하기</button>
+        </div>        
     )
 }
 

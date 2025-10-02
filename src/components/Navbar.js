@@ -4,6 +4,11 @@ import {auth} from "../fbase"
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import "../css/Navbar.css"
 
+import bera from "../image/bera.svg"
+import cart from "../image/cart.png"
+import people from "../image/people.png"
+
+
 const Navbar = () => {
     const [user, setUser] = useState(null)
     const [openMenu, setOpenMenu] = useState(false)
@@ -26,40 +31,34 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div className="navbar-left">
-                <Link to="/" className="nav-btn">Home</Link>
+                <Link to="/">
+                    <img src={bera} alt="Home" className="nav-icon" />
+                </Link>
             </div>
 
-            <div style={{ display: "flex", gap: "15px", position: "relative" }}>
-                <Link to="/cart" className="nav-btn">Cart</Link>
+            <div className="navbar-right">
+                <Link to="/cart">
+                    <img src={cart} alt="Cart" className="nav-icon"/>
+                </Link>
 
-                {/*profile login*/}
                 {user ? (
-                    <div style={{position: "relative"}} onMouseEnter={() => setOpenMenu(true)}
-                    onMouseLeave={() => setOpenMenu(false)}>
-                        <span style={{cursor: "pointer"}}>Profile</span>
+                    <div className="profile-menu" onMouseEnter={() => setOpenMenu(true)}
+                        onMouseLeave={() => setOpenMenu(false)}>
+                        <img src={people} alt="Profile" className="nav-icon" />
 
-                    {openMenu && (
-                        <div style={{
-                            position: "absolute",
-                            top: "100%",
-                            right: 0,
-                            background: "white",
-                            border: "1px solid gray",
-                            padding: "10px",
-                            display: "flex",
-                            flexDirection: "column",
-                            minWidth: "120px",
-                            }}>
-                            
-                            <Link to="/profile">Profile</Link>
-                            <button onClick={handleLogout}>로그아웃</button>
-                            </div>
-                        )}
-                        </div>
+                        {openMenu && (
+                            <div className="dropdown">
+                                <Link to="/profile">Profile</Link>
+                                <button onClick={handleLogout}>로그아웃</button>
+                            </div> 
+                        )}                   
+                    </div>
                 ) : (
-                        <Link to="/login">Login</Link>
+                    <Link to="/login">
+                        <img src={people} alt="Login" className="nav-icon" />
+                    </Link>
                 )}
-                </div>
+            </div>
         </nav>
     )
 }

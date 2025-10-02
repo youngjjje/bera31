@@ -1,0 +1,38 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+}
+
+/*제목*/
+.profile-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #F285C1;
+    margin-bottom: 30px;
+}
+
+/*버튼*/
+.profile-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+.profile-buttons button {
+    background: #F285C1;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    min-width: 150px;
+}
+.profile-buttons button:hover {
+    transform: scale(1.05);
+}

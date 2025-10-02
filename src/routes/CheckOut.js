@@ -1,7 +1,23 @@
 import React, {useEffect, useState} from "react"
 import {auth, db} from "../fbase"
-import {collection, deleteDoc, getDoc, getDocs, doc, addDoc} from "firebase/firestore"
+import {collection, deleteDoc, getDoc, getDocs, doc, addDoc, query, orderBy} from "firebase/firestore"
 import { useNavigate } from "react-router-dom"
+import "../css/CheckOut.css"
+
+import tropical from "../image/트로피컬.png"
+import polarbear from "../image/폴라베어.png"
+import watermelon from "../image/수박.png"
+import mango from "../image/망고.png"
+import rainbow from "../image/레인보우.png"
+
+const productImages = {
+    "1": tropical,
+    "2": polarbear,
+    "3": watermelon,
+    "4": mango,
+    "5": rainbow,
+}
+
 
 const CheckOut = () => {
     const [userInfo, setUserInfo] = useState({
@@ -42,15 +58,20 @@ const CheckOut = () => {
             const user = auth.currentUser
             if (!user) return
 
+            const q = query(
+                collection(db, "users", user.uid, "cart"),
+                orderBy("createAt", "asc")
+            )
             try {
-                const querySnapshot = await getDocs(
-                    collection(db, "users", user.uid, "cart")
-                )
-                const item = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }))
-                setCartItems(item)
+                const querySnapshot = await getDocs(q)
+                const items = querySnapshot.docs.map((docSnap) => {
+                    const data = docSnap.data()
+                    return {id: docSnap.id,
+                        ...data,
+                        image: productImages[Number(data.productId)] || "https://via.placeholder.com/150"
+                    }
+                    })
+                setCartItems(items)
             } catch (error) {
                 console.error("장바구니 불러오기 실패: ", error)
             }
@@ -87,6 +108,7 @@ const CheckOut = () => {
                 phone: userInfo.phone,
                 address: userInfo.address,
                 products: cartItems.map((item) => ({
+                    productId: item.productId,
                     name: item.name,
                     quantity: item.quantity,
                     price: item.price || 0,
@@ -110,30 +132,42 @@ const CheckOut = () => {
     }
 
     return (
-        <div>
-            <h2>주문서</h2>
+        <div className="checkout-container">
+            <h2 className="checkout-title">주문서 작성</h2>
 
             {/*주문자 정보*/}
-            <div>
+            <div className="checkout-box1">
                 <h3>배송자 정보</h3>
-                <input type="text" name="name" placeholder="이름" value={userInfo.name} onChange={handleInputChange} />
+                <label>
+                    이  름 <input type="text" name="name" placeholder="이름" value={userInfo.name} onChange={handleInputChange} />
+                </label>
                 <br />
-                <input type="tell" name="phone" placeholder="전화번호" value={userInfo.phone} onChange={handleInputChange} />
+                <label>                    
+                    전  화 <input type="tell" name="phone" placeholder="전화번호" value={userInfo.phone} onChange={handleInputChange} />
+                </label>
                 <br />
-                <input type="text" name="address" placeholder="주소" value={userInfo.address} onChange={handleInputChange} />
+                <label>
+                    주  소 <input type="text" name="address" placeholder="주소" value={userInfo.address} onChange={handleInputChange} />
+                </label>
             </div>
 
             {/*배송 상품*/}
-            <div>
+            <div className="checkout-box2">
                 <h3>배송 상품</h3>
                     {cartItems.length === 0 ? (
                         <p>장바구니가 비어있습니다</p>
                     ) : (
-                        <ul>
+                        <ul className="product-list">
                             {cartItems.map((item) => (
-                                <li key={item.id}>
-                                    {item.name} - tnfid: {item.quantity} - 가격:{" "}
-                                    {((item.price || 0) * (item.quantity || 1)). toLocaleString()}원
+                                
+                                <li key={item.id} className="product-box">
+                                    <div className="checkout-image-box">
+                                        <img src={item.image} alt={item.name} />
+                                    </div>
+                                    <div className="product-info">
+                                        {item.name} - 수량: {item.quantity} - 가격:{" "}
+                                        {((item.price || 0) * (item.quantity || 1)). toLocaleString()}원
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -141,7 +175,7 @@ const CheckOut = () => {
             </div>
 
             {/*결제 수단*/}
-            <div>
+            <div className="checkout-box3">
                 <h3>결제 수단</h3>
                 <label>
                     <input type="radio" value={"card"} checked={paymentMethod === "card"}
@@ -161,10 +195,12 @@ const CheckOut = () => {
             </div>
 
             {/*최종 결제*/}
-            <div>
+            <div className="checkout-box4">
                 <h3>결제 정보</h3>
                 <p>총 상품 금액: {totalPrice.toLocaleString()}원</p>
-                <button onClick={handleSubmit}>결제하기</button>
+                <div className="button-wrapper">
+                    <button className="pay-button" onClick={handleSubmit}>결제하기</button>
+                </div>
             </div>
         </div>
         
