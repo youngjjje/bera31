@@ -28,12 +28,13 @@
 
 /* 상품 이미지 */
 .product-image {
-  width: 700px;
+  width: 600px;
   height: auto;
   opacity: 0;
   transform: translateY(50px) scale(1);
   transition: opacity 0.8s ease-in-out;
   cursor: pointer;
+  padding: auto;
 }
 
 .product-image.visible {
